@@ -1,5 +1,7 @@
 second part of the semester is going to be tough! hope you all enjoyed your break :))
 
+[reinforcement learning book](http://incompleteideas.net/book/ebook/the-book.html)
+
 INTRODUCTION TO REINFORCEMENT LEARNING	(RL)
 ============================================
 [Lapan, Maxim. Deep Reinforcement Learning Hands-On]
