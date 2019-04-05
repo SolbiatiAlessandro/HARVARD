@@ -44,3 +44,54 @@ Let's use JAGS to estimate how fair a coin is, based on 100 coin flips
 [Burn-in is intended to give the Markov Chain time to reach its equilibrium distribution, particularly if it has started from a lousy starting point. To "burn in" a chain, you just discard the first 𝑛 samples before you start collecting points.]
 4. After we simulate we see a traceplot were on the X axis there are iteration, and on Y axis there is the current `theta` estimate
 5. The mean of this `theta` estimations will be my inferred value for `theta`
+
+Lab2 notebook walkthourgh
+=========================
+([notebook here](https://github.com/Harvard-IACS/2019-CS109B/blob/master/content/labs/lab9/cs109b_lab9_student.ipynb))
+
+whole course on this topics [AM207 Advanced Scientific Computing: Stochastic Optimization Methods. Monte Carlo Methods for Inference and Data Analysis](http://iacs-courses.seas.harvard.edu/courses/am207/)
+
+**Schools Data and Bayesian Modeling**
+We need to answer the question: do we want to implement this program or not?
+A hierarchical model for the schools:
+This program intrisically has a spread of effects when school implmements. Different implementations will have a different range of effect.
+This range of effect is defined by MU and TAU, where
+MU ~ Uniform(-20,20) -> MU is the mean of the distribution of the observed value
+TAU ~ Uniform(0, 10) -> TAU is the variance of the distribution of the observed value
+Sigma-j given
+
+> **y-j ~ Normal(Mean=theta-j,SD=sigma-j)** : First, the observed data (one value per school) are 1) normally distributed 2) each centered at a different value, one per school.
+> **theta-j ~ Normal(Mean=mu, SD=tau)** : Parrameters are the 'true average effect' of the program in school j, separate from the (noisy) effect we actually observe.
+
+I code this into Jags
+```
+schools_model_code = '''
+model {
+    
+    mu ~ dunif(-20,20)
+    tau ~ dunif(0,10)
+    
+    for (j in 1:J){
+        theta[j] ~ dnorm(mu, 1/pow(tau,2))
+    }
+    
+    for (j in 1:J){
+        y[j] ~ dnorm(theta[j], 1/pow(sigma[j],2))
+    }
+}
+'''
+```
+I generate my samples and then I draw summaries (read lectures for more info on this about MCMC baysianMachineLearning.md)
+
+If I draw a summary on School A on the posterior distribution, the mean of the distribution on school A is around ~10 -> the starting observation on school A was ~28! This is the shirknage discussed in lecture
+
+What does doing a Bayesian anlysis buy? What is the big difference with frequentist?
+
+- Bayesian analysis give you a probability distribution over your parameters, all of the possible values of your Theta and Tau
+
+What the cost of doing a Bayesian Analysis?
+
+- PRIOR, you need to be  willing to introduce a prior: if we start from different prior we get different results.
+
+
+
